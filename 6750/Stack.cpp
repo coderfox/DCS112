@@ -16,18 +16,12 @@ Stack::Stack(const Stack &rhs) : data(rhs.data)
         return;
     node *prev_data = data;
     data = new node;
-#ifdef DEBUG
-    cout << "[NEW]" << hex << data << endl;
-#endif
     copy(prev_data, prev_data + 1, data);
     node *cur = data;
     while (cur->next != nullptr)
     {
         node *prev_next = cur->next;
         cur->next = new node;
-#ifdef DEBUG
-        cout << "[NEW]" << hex << cur->next << endl;
-#endif
         copy(prev_next, prev_next + 1, cur->next);
         cur = cur->next;
     }

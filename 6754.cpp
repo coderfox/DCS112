@@ -79,10 +79,13 @@ int main()
             cout << seq.back() << ':';
             ++tot;
         }
-        /* cout << '{';
-        std::copy(seq.a, seq.a + seq.msize,
-                  std::ostream_iterator<int>(std::cout, ", "));
-        cout << '}' << endl; */
+        cout << '{';
+        for (int i = 0; i < seq.size(); i++)
+        {
+            cout << seq.at(i) << ',';
+            cout.flush();
+        }
+        cout << '}' << endl;
         cout << endl;
     }
     for (int i = 0; i < seq.size(); i++)
