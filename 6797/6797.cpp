@@ -1,5 +1,5 @@
-#include "6797/user.hpp"
-#include "6797/test.hpp"
+#include "user.hpp"
+#include "test.hpp"
 
 int main()
 {

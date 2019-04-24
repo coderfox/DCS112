@@ -1,18 +1,40 @@
 #include "global.hpp"
 #include "user.hpp"
+#include "userController.hpp"
 #include <cstring>
-
-using namespace std;
+//#pragma warning(suppress : 4996)
 using namespace Alipay;
-
+using namespace std;
+/*class user {
+		char username[21];
+		char password[21];
+		double balance;
+	*/
 user::user(const char *username, const char *password)
 {
-    strcpy(this->username, username);
-    strcpy(this->password, password);
+    /*strncpy(this->username, username,21);
+	strncpy(this->password, password,21);*/
+    int lenp = strlen(password);
+    int i = 0;
+    for (i = 0; i < lenp; i++)
+    {
+        //this->password[i] = password[i];
+        *(this->password + i) = *(password + i);
+    }
+    *(this->password + i) = '\0';
+    int lenu = strlen(username);
+    for (i = 0; i < lenu; i++)
+    {
+        //this->username[i] = username[i];
+        *(this->username + i) = *(username + i);
+    }
+    *(this->username + i) = '\0';
     balance = 0;
 }
 user::~user()
 {
+    balance = 0.0;
+    //empty
 }
 const char *user::getUsername() const
 {
@@ -24,29 +46,62 @@ const char *user::getPassword() const
 }
 const void user::setUsername(const char *username)
 {
-    strcpy(this->username, username);
+    string a = username;
+    //int lenu = strlen(username);
+    int lenu = a.length();
+    int i = 0;
+    for (i = 0; i < lenu; i++)
+    {
+        //this->username[i] = username[i];
+        *(this->username + i) = *(username + i);
+    }
+    *(this->username + i) = '0';
 }
 const void user::setPassword(const char *password)
 {
-    strcpy(this->password, password);
+    //int lenp = strlen(password);
+    string a = password;
+    int lenp = a.length();
+    int i = 0;
+    for (i = 0; i < lenp; i++)
+    {
+        //this->password[i] = password[i];
+        *(this->password + i) = *(password + i);
+    }
+    *(this->password + i) = '\0';
 }
 double user::getBalance()
 {
-    return balance;
+    if (this != NULL)
+    {
+        return balance;
+    }
 }
 bool user::withdraw(double amount)
 {
-    if (amount < 0)
+    if (amount <= balance && amount > 0)
+    {
+        balance -= amount;
+        return true;
+    }
+    else
+    {
         return false;
-    if (balance < amount)
-        return false;
-    balance -= amount;
-    return true;
+    }
 }
 bool user::deposite(double amount)
 {
-    if (amount < 0)
+    if (this == NULL)
+    {
         return false;
-    balance += amount;
-    return true;
+    }
+    if (amount > 0)
+    {
+        balance += amount;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

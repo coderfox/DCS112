@@ -5,13 +5,27 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "(cppdbg) Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/tmp",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      // "internalConsoleOptions": "neverOpen",
+      "MIMode": "lldb",
+      "preLaunchTask": "compile"
+    },
+    {
       "name": "(lldb) Launch",
       "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/tmp",
       "args": [],
       // "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
       // "environment": [],
       // "externalConsole": true,
       // "MIMode": "lldb",

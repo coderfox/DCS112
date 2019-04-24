@@ -1,112 +1,185 @@
 #include "global.hpp"
 #include "user.hpp"
 #include "userController.hpp"
-#include <string>
-#include <algorithm>
-#include <iomanip>
-#include <sstream>
 #include <cstring>
 #include <iostream>
-
-using namespace std;
 using namespace Alipay;
-
-bool is_alnum(const char chr)
+using namespace std;
+/*double interest_rate;
+user* users[MAX_USER];
+int usercount;
+int getUserIndex(const char* username) const;
+MAX_USER 10000
+*/
+/*class user {
+		char username[21];
+		char password[21];
+		double balance;
+	*/
+int userController::getUserIndex(const char *username) const
 {
-    if (chr >= 'A' && chr <= 'Z')
-        return true;
-    if (chr >= 'a' && chr <= 'z')
-        return true;
-    if (chr >= '0' && chr <= '9')
-        return true;
-    return false;
-}
-bool is_num(const char chr)
-{
-    return (chr >= '0' && chr <= '9');
-}
-
-// auxiliary function for format checking
-bool verifyPasswordFormat(const char *password)
-{
-    if (strlen(password) < 8 || strlen(password) > 20)
-        return false;
-    for (const char *chr = password; *chr != '\0'; chr++)
+    int flag = 0;
+    int i = 0;
+    for (i = 0; i < usercount; i++)
     {
-        if (!is_alnum(*chr))
+        flag = strcmp(users[i]->getUsername(), username);
+        if (flag == 0)
         {
-            return false;
+            break;
         }
     }
-    return true;
+    /*string a = username;
+	string b;
+	for (i = 0; i < usercount; i++) {
+		b = users[i]->getUsername();
+		if (a == b) {
+			break;
+		}
+	}*/
+    return i;
 }
-bool verifyUsernameFormat(const char *username)
-{
-    if (strlen(username) < 6 || strlen(username) > 20)
-        return false;
-    for (const char *chr = username; *chr != '\0'; chr++)
-    {
-        if (!is_alnum(*chr))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 userController::userController(double interest_rate)
-    : interest_rate(interest_rate), usercount(0)
 {
+    this->interest_rate = interest_rate;
+    for (int i = 0; i < MAX_USER; i++)
+    {
+        users[i] = NULL;
+    }
+    usercount = 0;
 }
 userController::~userController()
 {
-    for (int i = 0; i < usercount; i++)
+    int i = 0;
+    while (users[i])
     {
         delete users[i];
-    }
-}
-int userController::getUserIndex(const char *username) const
-{
-    for (int i = 0; i < usercount; i++)
-    {
-        if (!strcmp(users[i]->getUsername(), username))
+        i++;
+        if (i == MAX_USER)
         {
-            return i;
+            break;
         }
     }
-    return -1;
+    usercount = 0;
 }
 bool userController::createUser(const char *username, const char *password)
 {
-    if (!verifyUsernameFormat(username) || !verifyPasswordFormat(password))
+    /*int i = 0;
+	while (this->users[i]) {
+		i++;
+		if (i == MAX_USER) {
+			break;
+		}
+	}*/
+    string tmpname = username;
+    int lenname = tmpname.length();
+    int flag1 = 0;
+    for (int i = 0; i < lenname; i++)
+    {
+        if ((tmpname.at(i) >= 48 && tmpname.at(i) <= 57) || (tmpname.at(i) >= 65 && tmpname.at(i) <= 90) || (tmpname.at(i) >= 97 && tmpname.at(i) <= 122))
+        {
+            flag1 = 1;
+        }
+        else
+        {
+            flag1 = 0;
+            break;
+        }
+    }
+    if (lenname < 6 || lenname > 20)
+    {
+        flag1 = 0;
+    }
+    string tmppass = password;
+    int lenpass = tmppass.length();
+    int flag2 = 0;
+    for (int i = 0; i < lenpass; i++)
+    {
+        if ((tmppass.at(i) >= 48 && tmppass.at(i) <= 57) || (tmppass.at(i) >= 65 && tmppass.at(i) <= 90) || (tmppass.at(i) >= 97 && tmppass.at(i) <= 122))
+        {
+            flag2 = 1;
+        }
+        else
+        {
+            flag2 = 0;
+            break;
+        }
+    }
+    if (lenpass < 8 || lenpass > 20)
+    {
+        flag2 = 0;
+    }
+    if (flag1 == 0 || flag2 == 0)
+    {
         return false;
-    if (getUserIndex(username) >= 0)
+    }
+    else if (usercount == MAX_USER)
+    {
         return false;
-    users[usercount++] = new user(username, password);
-    return true;
+    }
+    else
+    {
+        this->users[usercount] = new user(username, password);
+        usercount++;
+        if (users[usercount - 1])
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 bool userController::deposite(const char *username, double amount)
 {
-    if (getUserIndex(username) < 0)
+    int i = getUserIndex(username);
+    if (amount > 0)
+    {
+        users[i]->deposite(amount);
+        return true;
+    }
+    else
+    {
         return false;
-    return users[getUserIndex(username)]->deposite(amount);
+    }
 }
 bool userController::withdraw(const char *username, double amount)
 {
-    if (getUserIndex(username) < 0)
+    int i = getUserIndex(username);
+    if (amount > 0 && amount < users[i]->getBalance())
+    {
+        users[i]->withdraw(amount);
+        return true;
+    }
+    else
+    {
         return false;
-    return users[getUserIndex(username)]->withdraw(amount);
+    }
 }
 std::string userController::getUserInfoByName(const char *username) const
 {
-    if (getUserIndex(username) < 0)
-        return "No such user!";
-    user *u = users[getUserIndex(username)];
-    stringstream ss;
-    ss << "username:" << u->getUsername() << endl
-       << "password:*********" << endl
-       << "balance:" << u->getBalance();
-    return ss.str();
+    int i = getUserIndex(username);
+    string ret = "username:";
+    ret.append(username);
+    ret.append("\n");
+    ret.append("password:*********\nbalance:");
+    int temp = users[i]->getBalance();
+    char a[20] = {0};
+    int wei = 0;
+    int j = 0;
+    while (temp)
+    {
+        a[j] = temp % 10 + '0';
+        temp = temp / 10;
+        j++;
+        wei++;
+    }
+    temp = users[i]->getBalance();
+    for (j = wei - 1; j >= 0; j--)
+    {
+        ret = ret + a[j];
+    }
+    return ret;
 }
 int userController::getUserCount(void) const
 {
@@ -114,27 +187,35 @@ int userController::getUserCount(void) const
 }
 bool userController::removeUserByUsername(const char *username)
 {
-    int index = getUserIndex(username);
-    if (index < 0)
+    int i = getUserIndex(username);
+    if (i == usercount)
+    {
         return false;
-    // cout << "[DELETE] " << index << ' ' << usercount << endl;
-    if (index != usercount - 1)
-        swap(users[index], users[usercount - 1]);
+    }
+    users[i]->setPassword(users[usercount - 1]->getPassword());
+    users[i]->setUsername(users[usercount - 1]->getUsername());
+    delete users[usercount - 1];
     usercount--;
-    // cout << "[DELETE] " << username << ' ' << users[usercount] << endl;
-    delete users[usercount];
     return true;
 }
 bool userController::setInterest(double interest)
 {
-    interest_rate = interest;
-    return true;
+    if (interest > 0)
+    {
+        interest_rate = interest;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 void userController::payInterest(void)
 {
+    //double temp = 0;
     for (int i = 0; i < usercount; i++)
     {
-        user *u = users[i];
-        u->deposite(u->getBalance() * interest_rate);
+        //temp = users[i]->getBalance() - (users[i]->getBalance())*interest_rate;
+        users[i]->deposite((users[i]->getBalance()) * interest_rate);
     }
 }

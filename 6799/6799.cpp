@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <algorithm>
-#include "6799/Set.hpp"
+#include "Set.hpp"
 
 void display(int *members, int size)
 {

@@ -79,7 +79,8 @@
     "new": "cpp",
     "numeric": "cpp",
     "stdexcept": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "__errc": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }
