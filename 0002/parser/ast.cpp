@@ -15,7 +15,7 @@ Ident::Ident(string value) : value(value)
 {
 }
 
-Monomial::Monomial(unsigned int coefficient,
+Monomial::Monomial(int coefficient,
                    unsigned int power) : coefficient(coefficient), power(power)
 {
 }

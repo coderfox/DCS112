@@ -40,7 +40,7 @@ struct Monomial final : public Expr
     int coefficient;
     unsigned int power;
 
-    Monomial(unsigned int coefficient, unsigned int power);
+    Monomial(int coefficient, unsigned int power);
 
     DECL_INHERIT_FUNCS(Monomial)
 };

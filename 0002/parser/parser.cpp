@@ -155,6 +155,7 @@ shared_ptr<Expr> Parser::term_monomial()
     return make_shared<Monomial>(coefficient, power);
 }
 
+// PolySingle = { "(" ~ "-"? ~ Integer ~ "," ~ Integer ~ ")" }
 shared_ptr<ast::Expr> Parser::term_polynomial_single()
 {
     unsigned int coefficient = 1;
@@ -166,6 +167,12 @@ shared_ptr<ast::Expr> Parser::term_polynomial_single()
 
     try
     {
+        if (peak(Token::OP_SUBTRACT))
+        {
+            match(Token::OP_SUBTRACT);
+            coefficient = -term_integer();
+        }
+        else
             coefficient = term_integer();
     }
     catch (Error)
@@ -351,4 +358,12 @@ shared_ptr<Expr> Parser::expr()
         }
     }
     return expr;
+}
+
+void Parser::ensure_finished()
+{
+    if (_current != _end)
+    {
+        throw make_error("END_OF_INPUT");
+    }
 }
