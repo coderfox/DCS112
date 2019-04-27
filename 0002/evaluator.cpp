@@ -10,7 +10,8 @@ Evaluator::Evaluator()
 
 Polynomial Evaluator::eval(string code)
 {
-    auto lexer = Lexer(code);
+    _current_str = code;
+    auto lexer = Lexer(_current_str);
     lexer.parse();
     auto parser = Parser(lexer.cbegin(), lexer.cend());
     auto expr = parser.expr();
@@ -42,7 +43,10 @@ void Evaluator::visit(const ast::Ident &value)
     }
     catch (out_of_range &)
     {
-        throw "Undefined variable " + value.value;
+        throw Error(
+            Span(_current_str.begin(), _current_str.end()),
+            value.get_span(),
+            "Undefined variable " + value.value);
     }
 }
 
@@ -106,7 +110,9 @@ void Evaluator::visit(const ast::BinaryAssign &value)
         ss << "Invalid left operand ("
            << *value.id
            << ") of BinaryAssign";
-        throw ss.str();
+        throw Error(
+            Span(_current_str.begin(), _current_str.end()),
+            value.get_span(), ss.str());
     }
     value.value->accept(*this);
     auto right = _state.back();

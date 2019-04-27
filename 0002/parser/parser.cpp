@@ -5,6 +5,12 @@
 using namespace std;
 using namespace ast;
 
+#define MARK_SPAN_BEGIN \
+    auto span_begin = _current
+
+#define MARK_SPAN_GEN(d) \
+    (span_begin->get_span() + (_current - d)->get_span())
+
 // ===== Common Functions =====
 Token Parser::match(Token::Type cur_ty)
 {
@@ -111,8 +117,9 @@ shared_ptr<Expr> Parser::term_ident()
 {
     try
     {
+        MARK_SPAN_BEGIN;
         auto token = match(Token::IDENTIFIER);
-        return make_shared<Ident>(string(token.get_span().begin, token.get_span().end));
+        return make_shared<Ident>(MARK_SPAN_GEN(1), string(token.get_span().begin, token.get_span().end));
     }
     catch (Token::Type)
     {
@@ -123,6 +130,7 @@ shared_ptr<Expr> Parser::term_ident()
 // Monomial   = { Integer | (Integer? ~ "x" ~ ("^" ~ Integer)? ) }
 shared_ptr<Expr> Parser::term_monomial()
 {
+    MARK_SPAN_BEGIN;
     unsigned int coefficient = 1;
     unsigned int power = 0;
     if (peak(Token::INTEGER))
@@ -148,12 +156,13 @@ shared_ptr<Expr> Parser::term_monomial()
             }
         }
     }
-    return make_shared<Monomial>(coefficient, power);
+    return make_shared<Monomial>(MARK_SPAN_GEN(1), coefficient, power);
 }
 
 // PolySingle = { "(" ~ "-"? ~ Integer ~ "," ~ Integer ~ ")" }
 shared_ptr<ast::Expr> Parser::term_polynomial_single()
 {
+    MARK_SPAN_BEGIN;
     unsigned int coefficient = 1;
     unsigned int power = 0;
 
@@ -193,16 +202,17 @@ shared_ptr<ast::Expr> Parser::term_polynomial_single()
         throw make_error("Expected: ')'");
     match(Token::OP_RPAREN);
 
-    return make_shared<Monomial>(coefficient, power);
+    return make_shared<Monomial>(MARK_SPAN_GEN(1), coefficient, power);
 }
 
 // Polynomial = { ("(" ~ Integer ~ "," ~ Integer ~ ")")+ }
 shared_ptr<Expr> Parser::term_polynomial()
 {
+    MARK_SPAN_BEGIN;
     auto mono = term_polynomial_single();
     while (peak(Token::OP_LPAREN))
     {
-        mono = make_shared<Binary>(mono, Binary::ADD, term_polynomial_single());
+        mono = make_shared<Binary>(MARK_SPAN_GEN(1), mono, Binary::ADD, term_polynomial_single());
     }
     return mono;
 }
@@ -210,6 +220,7 @@ shared_ptr<Expr> Parser::term_polynomial()
 // Term       = { ("(" ~ Expr ~ ")") | Polynomial | Monomial | Ident }
 shared_ptr<Expr> Parser::expr_terminal()
 {
+    // MARK_SPAN_BEGIN;
     if (peak(Token::OP_LPAREN, Token::INTEGER, Token::OP_COMMA))
     {
         return term_polynomial();
@@ -241,10 +252,11 @@ shared_ptr<Expr> Parser::expr_terminal()
 // Expr4      = { ("-" ~ Term) | Term }
 shared_ptr<Expr> Parser::expr_negative()
 {
+    MARK_SPAN_BEGIN;
     if (peak(Token::OP_SUBTRACT))
     {
         match(Token::OP_SUBTRACT);
-        return make_shared<Unary>(Unary::MINUS, expr_terminal());
+        return make_shared<Unary>(MARK_SPAN_GEN(1), Unary::MINUS, expr_terminal());
     }
     else
         return expr_terminal();
@@ -253,11 +265,12 @@ shared_ptr<Expr> Parser::expr_negative()
 // Expr2      = { Expr3 ~ ("*" ~ Expr3)* }
 shared_ptr<Expr> Parser::expr_multiply()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_negative();
     while (peak(Token::OP_MULTIPLY))
     {
         match(Token::OP_MULTIPLY);
-        expr = make_shared<Binary>(expr, Binary::MULTIPLY, expr_negative());
+        expr = make_shared<Binary>(MARK_SPAN_GEN(1), expr, Binary::MULTIPLY, expr_negative());
     }
     return expr;
 }
@@ -265,18 +278,19 @@ shared_ptr<Expr> Parser::expr_multiply()
 // Expr1      = { Expr2 ~ (("+"|"-") ~ Expr2)* }
 shared_ptr<Expr> Parser::expr_sum_or_subtract()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_multiply();
     while (peak(Token::OP_ADD) || peak(Token::OP_SUBTRACT))
     {
         if (peak(Token::OP_ADD))
         {
             match(Token::OP_ADD);
-            expr = make_shared<Binary>(expr, Binary::ADD, expr_multiply());
+            expr = make_shared<Binary>(MARK_SPAN_GEN(1), expr, Binary::ADD, expr_multiply());
         }
         else if (peak(Token::OP_SUBTRACT))
         {
             match(Token::OP_SUBTRACT);
-            expr = make_shared<Binary>(expr, Binary::SUBTRACT, expr_multiply());
+            expr = make_shared<Binary>(MARK_SPAN_GEN(1), expr, Binary::SUBTRACT, expr_multiply());
         }
     }
     return expr;
@@ -285,11 +299,12 @@ shared_ptr<Expr> Parser::expr_sum_or_subtract()
 // Expr3      = { (Expr4 ~ "'") | Expr4 }
 shared_ptr<Expr> Parser::expr_derive()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_sum_or_subtract();
     if (peak(Token::OP_DERIVE))
     {
         match(Token::OP_DERIVE);
-        return make_shared<Unary>(Unary::DERIVE, expr);
+        return make_shared<Unary>(MARK_SPAN_GEN(1), Unary::DERIVE, expr);
     }
     else
         return expr;
@@ -298,6 +313,7 @@ shared_ptr<Expr> Parser::expr_derive()
 // ExprEval  = { Expr1 ~ ("!" ~ "-"? ~ Integer)? }
 shared_ptr<ast::Expr> Parser::expr_eval()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_derive();
     if (peak(Token::OP_BANG))
     {
@@ -305,10 +321,10 @@ shared_ptr<ast::Expr> Parser::expr_eval()
         if (peak(Token::OP_SUBTRACT))
         {
             match(Token::OP_SUBTRACT);
-            return make_shared<BinaryEval>(expr, -term_integer());
+            return make_shared<BinaryEval>(MARK_SPAN_GEN(1), expr, -term_integer());
         }
         else
-            return make_shared<BinaryEval>(expr, term_integer());
+            return make_shared<BinaryEval>(MARK_SPAN_GEN(1), expr, term_integer());
     }
     else
         return expr;
@@ -317,6 +333,7 @@ shared_ptr<ast::Expr> Parser::expr_eval()
 // Expr0      = { Expr1 ~ ("==" ~ Expr1)* }
 shared_ptr<Expr> Parser::expr_equal()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_eval();
     while (peak(Token::OP_EQ))
     {
@@ -326,11 +343,11 @@ shared_ptr<Expr> Parser::expr_equal()
             auto &expr_bin = dynamic_cast<Binary &>(*expr);
             if (expr_bin.op != Binary::EQUAL)
                 throw bad_cast();
-            expr_bin.right = make_shared<Binary>(expr_bin.right, Binary::EQUAL, expr_eval());
+            expr_bin.right = make_shared<Binary>(MARK_SPAN_GEN(1), expr_bin.right, Binary::EQUAL, expr_eval());
         }
         catch (bad_cast &)
         {
-            expr = make_shared<Binary>(expr, Binary::EQUAL, expr_eval());
+            expr = make_shared<Binary>(MARK_SPAN_GEN(1), expr, Binary::EQUAL, expr_eval());
         }
     }
     return expr;
@@ -339,6 +356,7 @@ shared_ptr<Expr> Parser::expr_equal()
 // Expr       = { (Expr0 ~ "=")* ~ Expr0 }
 shared_ptr<Expr> Parser::expr()
 {
+    MARK_SPAN_BEGIN;
     auto expr = expr_equal();
     while (peak(Token::OP_ASSIGN))
     {
@@ -346,11 +364,11 @@ shared_ptr<Expr> Parser::expr()
         try
         {
             auto &expr_bin = dynamic_cast<BinaryAssign &>(*expr);
-            expr_bin.value = make_shared<BinaryAssign>(expr_bin.value, expr_equal());
+            expr_bin.value = make_shared<BinaryAssign>(MARK_SPAN_GEN(2), expr_bin.value, expr_equal());
         }
         catch (bad_cast &)
         {
-            expr = make_shared<BinaryAssign>(expr, expr_equal());
+            expr = make_shared<BinaryAssign>(MARK_SPAN_GEN(2), expr, expr_equal());
         }
     }
     return expr;
@@ -360,6 +378,6 @@ void Parser::ensure_finished()
 {
     if (_current != _end)
     {
-        throw make_error("END_OF_INPUT");
+        throw make_error("Expected: END_OF_INPUT");
     }
 }

@@ -11,6 +11,7 @@ class Evaluator final : public Visitor
   private:
     std::map<std::string, Polynomial> _context;
     std::vector<Polynomial> _state;
+    std::string _current_str;
 
   public:
     Evaluator();

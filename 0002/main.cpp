@@ -2,17 +2,27 @@
 #include "parser/error.hpp"
 #include "evaluator.hpp"
 
+#define COLOR_OUTPUT
+
 using namespace std;
 
 int main()
 {
     Evaluator host;
     string str;
+#ifdef COLOR_OUTPUT
+    while (cout << "\033[4;36m"
+                << "polynomial>"
+                << "\033[0m ",
+           getline(cin, str))
+#else
     while (cout << "polynomial> ", getline(cin, str))
+#endif
     {
         try
         {
-            cout << host.eval(str) << endl;
+            auto poly = host.eval(str);
+            cout << "Result = " << poly << endl;
             cout << "| "
                  << setw(4) << "name"
                  << " | "
@@ -40,10 +50,6 @@ int main()
         catch (Error e)
         {
             cerr << e << endl;
-        }
-        catch (string s)
-        {
-            cerr << s << endl;
         }
     }
     return 0;

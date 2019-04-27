@@ -11,33 +11,46 @@ using namespace ast;
 
 // ===== Constructor =====
 
-Ident::Ident(string value) : value(value)
+Expr::Expr(Span span) : HasSpan(span)
 {
 }
 
-Monomial::Monomial(int coefficient,
-                   unsigned int power) : coefficient(coefficient), power(power)
+Ident::Ident(Span span, string value) : Expr(span), value(value)
 {
 }
 
-Unary::Unary(Op op, shared_ptr<Expr> operand) : op(op), operand(operand)
+Monomial::Monomial(
+    Span span,
+    int coefficient,
+    unsigned int power) : Expr(span), coefficient(coefficient), power(power)
 {
 }
 
-Binary::Binary(shared_ptr<Expr> left,
-               Op op,
-               shared_ptr<Expr> right) : left(left), op(op), right(right)
+Unary::Unary(
+    Span span,
+    Op op,
+    shared_ptr<Expr> operand) : Expr(span), op(op), operand(operand)
+{
+}
+
+Binary::Binary(
+    Span span,
+    shared_ptr<Expr> left,
+    Op op,
+    shared_ptr<Expr> right) : Expr(span), left(left), op(op), right(right)
 {
 }
 
 BinaryAssign::BinaryAssign(
+    Span span,
     shared_ptr<Expr> id,
-    shared_ptr<Expr> value) : id(id), value(value)
+    shared_ptr<Expr> value) : Expr(span), id(id), value(value)
 {
 }
 
 BinaryEval::BinaryEval(
-    shared_ptr<Expr> expr, int x) : x(x), expr(expr)
+    Span span,
+    shared_ptr<Expr> expr, int x) : Expr(span), x(x), expr(expr)
 {
 }
 
