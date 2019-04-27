@@ -1,0 +1,10 @@
+point p1:on-rectangle
+on-circle
+point p2:on-rectangle
+on-circle
+point p3:inside-rectangle
+inside-circle
+point p4:outside-rectangle
+on-circle
+point p5:outside-rectangle
+outside-circle

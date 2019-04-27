@@ -1,0 +1,19 @@
+#include "optional.hpp"
+#include "catch.hpp"
+
+TEST_CASE("class optional", "[optional]")
+{
+    auto some = make_some(42);
+    auto none = make_none<int>();
+    SECTION("some")
+    {
+        REQUIRE(some.is_some());
+        REQUIRE_FALSE(some.is_none());
+        REQUIRE(*some.unwrap() == 42);
+    }
+    SECTION("none")
+    {
+        REQUIRE_FALSE(none.is_some());
+        REQUIRE(none.is_none());
+    }
+}

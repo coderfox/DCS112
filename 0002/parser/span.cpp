@@ -1,0 +1,45 @@
+#include <algorithm>
+#include "span.hpp"
+
+using namespace std;
+
+Span::Span(
+    string::const_iterator begin,
+    string::const_iterator end) : begin(begin), end(end)
+{
+}
+
+// [WARNING] this function is O(logN)
+bool Span::operator==(const Span &rhs) const
+{
+    return distance(begin, rhs.begin) == 0 && distance(end, rhs.end) == 0;
+}
+
+string Span::to_string() const
+{
+    return '\"' + string(begin, end) + '\"';
+}
+
+std::ostream &operator<<(std::ostream &out, const Span &span)
+{
+    return out << span.to_string();
+}
+
+HasSpan::HasSpan(Span span) : _span(span)
+{
+}
+
+const Span &HasSpan::get_span() const
+{
+    return _span;
+}
+
+string HasSpan::to_string() const
+{
+    return _span.to_string();
+}
+
+std::ostream &operator<<(std::ostream &out, const HasSpan &span)
+{
+    return out << span.to_string();
+}

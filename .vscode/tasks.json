@@ -8,7 +8,7 @@
       "type": "shell",
       "command": "clang++",
       "args": [
-        "${fileDirname}/*${fileExtname}",
+        "${fileDirname}/*.cpp",
         "-lm",
         "-g",
         "-Wall",

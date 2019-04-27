@@ -1,0 +1,42 @@
+#pragma once
+
+#include <memory>
+
+template <typename T>
+class optional
+{
+  private:
+    std::unique_ptr<T> _pointer;
+
+  public:
+    optional() : _pointer(nullptr)
+    {
+    }
+    optional(T value) : _pointer(new T(value))
+    {
+    }
+    bool is_some()
+    {
+        return _pointer != nullptr;
+    }
+    bool is_none()
+    {
+        return _pointer == nullptr;
+    }
+    std::unique_ptr<T> &unwrap()
+    {
+        return _pointer;
+    }
+};
+
+template <typename T>
+optional<T> make_some(T value)
+{
+    return optional<T>(value);
+}
+
+template <typename T>
+optional<T> make_none()
+{
+    return optional<T>();
+}

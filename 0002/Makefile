@@ -1,21 +1,40 @@
 CC=clang++
-CFLAGS=-Wall -std=c++14 -g
+CFLAGS=-Wall -std=c++14 -g -I lib -I .
 ODIR=obj
 BIN=main
+BIN_TEST=main.test
 
-_OBJ = main.o lexer.o polynominal.o
+_OBJ = polynomial.o evaluator.o \
+	parser/span.o parser/lexer.o parser/token.o \
+	parser/parser.o parser/error.o parser/ast.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+_OBJ_MAIN = main.o
+OBJ_MAIN = $(patsubst %,$(ODIR)/%,$(_OBJ_MAIN))
+
+_OBJ_TEST = main.test.o polynomial.test.o evaluator.test.o \
+	parser/lexer.test.o parser/token.test.o parser/parser.test.o parser/error.test.o
+OBJ_TEST = $(patsubst %,$(ODIR)/%,$(_OBJ_TEST))
 
 $(ODIR)/%.o: %.cpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(BIN): $(OBJ)
+$(BIN): $(OBJ) $(OBJ_MAIN)
 	$(CC) -o $(BIN) $^ $(CFLAGS)
+
+$(BIN_TEST): $(OBJ_TEST) $(OBJ)
+	$(CC) -o $(BIN_TEST) $^ $(CFLAGS)
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o $(BIN) 
+	rm -f $(OBJ) $(OBJ_MAIN) $(OBJ_TEST) $(BIN)  $(BIN_TEST)
 
 run: $(BIN)
 	./$(BIN)
+
+test: $(BIN_TEST)
+	./$(BIN_TEST)
+
+test-verbose: $(BIN_TEST)
+	./$(BIN_TEST) -s
