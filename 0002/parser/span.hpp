@@ -10,6 +10,7 @@ struct Span
     Span(std::string::const_iterator begin,
          std::string::const_iterator end);
     bool operator==(const Span &rhs) const;
+    Span operator+(const Span &rhs) const;
     std::string to_string() const;
     friend std::ostream &operator<<(std::ostream &out, const Span &span);
 };

@@ -8,7 +8,7 @@ using namespace std;
 
 Error::Error(Span total_span,
              Span error_span,
-             vector<string> expected) : expected(expected)
+             string message) : message(message)
 {
     total = string(total_span.begin, total_span.end);
     begin = distance(total_span.begin, error_span.begin);
@@ -30,7 +30,6 @@ ostream &operator<<(ostream &out, const Error &error)
     out << hint << error.total << endl
         << string(hint.length() + error.begin, ' ')
         << string(error.length, '^') << endl
-        << "Expected: ";
-    copy(error.expected.cbegin(), error.expected.cend(), ostream_iterator<string>(out, ", "));
+        << error.message;
     return out;
 }

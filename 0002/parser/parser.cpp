@@ -60,18 +60,14 @@ bool Parser::peak(Token::Type cur_ty, Token::Type next_ty, Token::Type next2_ty)
            *(_current + 2) == next2_ty;
 }
 
-Error Parser::make_error(string expected)
+Error Parser::make_error(string message)
 {
-    return make_error(vector<string>{expected});
-}
-Error Parser::make_error(vector<string> expected)
-{
-    return Error(Span(_begin->get_span().begin, (_end - 1)->get_span().end),
+    return Error(_begin->get_span() + (_end - 1)->get_span(),
                  _current >= _end ? Span(
                                         (_end - 1)->get_span().end,
                                         (_end - 1)->get_span().end)
                                   : _current->get_span(),
-                 expected);
+                 message);
 }
 
 // ===== Constructors =====
@@ -106,7 +102,7 @@ unsigned int Parser::term_integer()
     }
     catch (Token::Type)
     {
-        throw make_error("INTEGER");
+        throw make_error("Expected: integer");
     }
 }
 
@@ -120,7 +116,7 @@ shared_ptr<Expr> Parser::term_ident()
     }
     catch (Token::Type)
     {
-        throw make_error("IDENTIFIER");
+        throw make_error("Expected: identifier");
     }
 }
 
@@ -134,7 +130,7 @@ shared_ptr<Expr> Parser::term_monomial()
         coefficient = term_integer();
     }
     else if (!peak(Token::VARIABLE))
-        throw make_error(vector<string>{"integer", "VARIABLE"});
+        throw make_error("Expected: integer, variable");
     if (peak(Token::VARIABLE))
     {
         match(Token::VARIABLE);
@@ -148,7 +144,7 @@ shared_ptr<Expr> Parser::term_monomial()
             }
             catch (Error)
             {
-                throw make_error("integer");
+                throw make_error("Expected: integer");
             }
         }
     }
@@ -162,7 +158,7 @@ shared_ptr<ast::Expr> Parser::term_polynomial_single()
     unsigned int power = 0;
 
     if (!peak(Token::OP_LPAREN))
-        throw make_error("LPAREN");
+        throw make_error("Expected: polynomial_single");
     match(Token::OP_LPAREN);
 
     try
@@ -177,11 +173,11 @@ shared_ptr<ast::Expr> Parser::term_polynomial_single()
     }
     catch (Error)
     {
-        throw make_error("integer");
+        throw make_error("Expected: integer");
     }
 
     if (!peak(Token::OP_COMMA))
-        throw make_error("COMMA");
+        throw make_error("Expected: ','");
     match(Token::OP_COMMA);
 
     try
@@ -190,11 +186,11 @@ shared_ptr<ast::Expr> Parser::term_polynomial_single()
     }
     catch (Error)
     {
-        throw make_error("integer");
+        throw make_error("Expected: integer");
     }
 
     if (!peak(Token::OP_RPAREN))
-        throw make_error("RPAROP_RPAREN");
+        throw make_error("Expected: ')'");
     match(Token::OP_RPAREN);
 
     return make_shared<Monomial>(coefficient, power);
@@ -228,7 +224,7 @@ shared_ptr<Expr> Parser::expr_terminal()
             return ret;
         }
         else
-            throw make_error("OP_RPAREN");
+            throw make_error("Expected: ')'");
     }
     else if (peak(Token::INTEGER) || peak(Token::VARIABLE))
     {
@@ -239,7 +235,7 @@ shared_ptr<Expr> Parser::expr_terminal()
         return term_ident();
     }
     else
-        throw make_error(vector<string>{"OP_LPAREN", "polynomial", "monomial", "term_ident"});
+        throw make_error("Expected: (expr), polynomial, monomial, identifier");
 }
 
 // Expr4      = { ("-" ~ Term) | Term }

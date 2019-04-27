@@ -262,7 +262,7 @@ TEST_CASE("class Parser > parsers")
             REQUIRE(e.to_string() ==
                     "INPUT:4: p=(q\n"
                     "             ^\n"
-                    "Expected: OP_RPAREN, ");
+                    "Expected: ')'");
         }
     }
 }

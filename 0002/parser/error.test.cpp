@@ -10,7 +10,7 @@ TEST_CASE("class Error", "[parser][error]")
     auto error = Error(
         Span(input.cbegin(), input.cend()),
         Span(input.cbegin() + 7, input.cbegin() + 12),
-        vector<string>{"hello", "world"});
+        "Expected: hello, world, ");
     SECTION("to_string")
     {
         REQUIRE(error.to_string() == "INPUT:7: sample error input\n"

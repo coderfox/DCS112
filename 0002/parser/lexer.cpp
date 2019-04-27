@@ -274,12 +274,7 @@ void Lexer::parse()
         else if (!finished())
             throw Error(Span(cstr_begin(), cstr_end()),
                         Span(_current, _current + 1),
-                        vector<string>{
-                            string("INTEGER"),
-                            string("IDENTIFIER"),
-                            string("VARIABLE"),
-                            string("OP"),
-                            string("WHITESPACE")});
+                        "Unexpected token: '" + token.get_span().to_string() + "'");
     } while (!finished());
     if (_tokens.size() == 0)
     {

@@ -15,6 +15,11 @@ bool Span::operator==(const Span &rhs) const
     return distance(begin, rhs.begin) == 0 && distance(end, rhs.end) == 0;
 }
 
+Span Span::operator+(const Span &rhs) const
+{
+    return Span(begin, rhs.end);
+}
+
 string Span::to_string() const
 {
     return '\"' + string(begin, end) + '\"';
