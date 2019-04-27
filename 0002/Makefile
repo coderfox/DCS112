@@ -1,5 +1,5 @@
 CC=clang++
-CFLAGS=-Wall -std=c++14 -g -I lib -I .
+CFLAGS=-Wall -Wextra -std=c++14 -g -I lib -I .
 ODIR=obj
 BIN=main
 BIN_TEST=main.test
@@ -16,7 +16,7 @@ _OBJ_TEST = main.test.o polynomial.test.o evaluator.test.o \
 	parser/lexer.test.o parser/token.test.o parser/parser.test.o parser/error.test.o
 OBJ_TEST = $(patsubst %,$(ODIR)/%,$(_OBJ_TEST))
 
-$(ODIR)/%.o: %.cpp
+$(ODIR)/%.o: %.cpp | $(ODIR)/
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(BIN): $(OBJ) $(OBJ_MAIN)
@@ -25,7 +25,11 @@ $(BIN): $(OBJ) $(OBJ_MAIN)
 $(BIN_TEST): $(OBJ_TEST) $(OBJ)
 	$(CC) -o $(BIN_TEST) $^ $(CFLAGS)
 
-.PHONY: clean
+.PHONY: clean run test test-verbose
+
+$(ODIR)/:
+	mkdir -p $(ODIR)
+	mkdir -p $(ODIR)/parser
 
 clean:
 	rm -f $(OBJ) $(OBJ_MAIN) $(OBJ_TEST) $(BIN)  $(BIN_TEST)
