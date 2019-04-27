@@ -281,6 +281,10 @@ void Lexer::parse()
                             string("OP"),
                             string("WHITESPACE")});
     } while (!finished());
+    if (_tokens.size() == 0)
+    {
+        _tokens.push_back(Token(Token::VOID, cstr_begin(), cstr_end()));
+    }
 }
 
 Token Lexer::advance()

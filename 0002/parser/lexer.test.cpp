@@ -234,3 +234,10 @@ TEST_CASE("class Lexer > parsers # fix single token", "[parser][lexer]")
     lexer.parse();
     REQUIRE(lexer.token_count() == 1);
 }
+
+TEST_CASE("class Lexer > parsers # fix empty", "[parser][lexer]")
+{
+    auto lexer = Lexer("");
+    REQUIRE_NOTHROW(lexer.parse());
+    REQUIRE(lexer.token_count() == 1);
+}
