@@ -60,7 +60,7 @@ bool Parser::peak(Token::Type cur_ty, Token::Type next_ty, Token::Type next2_ty)
            *(_current + 2) == next2_ty;
 }
 
-Error Parser::make_error(std::string expected)
+Error Parser::make_error(string expected)
 {
     return make_error(vector<string>{expected});
 }
@@ -111,7 +111,7 @@ unsigned int Parser::term_integer()
 }
 
 // Ident      = @{ ALPHABETIC+ }
-std::shared_ptr<Expr> Parser::term_ident()
+shared_ptr<Expr> Parser::term_ident()
 {
     try
     {
@@ -125,7 +125,7 @@ std::shared_ptr<Expr> Parser::term_ident()
 }
 
 // Monomial   = { Integer | (Integer? ~ "x" ~ ("^" ~ Integer)? ) }
-std::shared_ptr<Expr> Parser::term_monomial()
+shared_ptr<Expr> Parser::term_monomial()
 {
     unsigned int coefficient = 1;
     unsigned int power = 0;
@@ -155,8 +155,7 @@ std::shared_ptr<Expr> Parser::term_monomial()
     return make_shared<Monomial>(coefficient, power);
 }
 
-// PolySingle = { "(" ~ Integer ~ "," ~ Integer ~ ")" }
-std::shared_ptr<ast::Expr> Parser::term_polynomial_single()
+shared_ptr<ast::Expr> Parser::term_polynomial_single()
 {
     unsigned int coefficient = 1;
     unsigned int power = 0;
@@ -167,7 +166,7 @@ std::shared_ptr<ast::Expr> Parser::term_polynomial_single()
 
     try
     {
-        coefficient = term_integer();
+            coefficient = term_integer();
     }
     catch (Error)
     {
@@ -195,7 +194,7 @@ std::shared_ptr<ast::Expr> Parser::term_polynomial_single()
 }
 
 // Polynomial = { ("(" ~ Integer ~ "," ~ Integer ~ ")")+ }
-std::shared_ptr<Expr> Parser::term_polynomial()
+shared_ptr<Expr> Parser::term_polynomial()
 {
     auto mono = term_polynomial_single();
     while (peak(Token::OP_LPAREN))
@@ -206,7 +205,7 @@ std::shared_ptr<Expr> Parser::term_polynomial()
 }
 
 // Term       = { ("(" ~ Expr ~ ")") | Polynomial | Monomial | Ident }
-std::shared_ptr<Expr> Parser::expr_terminal()
+shared_ptr<Expr> Parser::expr_terminal()
 {
     if (peak(Token::OP_LPAREN, Token::INTEGER, Token::OP_COMMA))
     {
@@ -237,7 +236,7 @@ std::shared_ptr<Expr> Parser::expr_terminal()
 }
 
 // Expr4      = { ("-" ~ Term) | Term }
-std::shared_ptr<Expr> Parser::expr_negative()
+shared_ptr<Expr> Parser::expr_negative()
 {
     if (peak(Token::OP_SUBTRACT))
     {
@@ -249,7 +248,7 @@ std::shared_ptr<Expr> Parser::expr_negative()
 }
 
 // Expr2      = { Expr3 ~ ("*" ~ Expr3)* }
-std::shared_ptr<Expr> Parser::expr_multiply()
+shared_ptr<Expr> Parser::expr_multiply()
 {
     auto expr = expr_negative();
     while (peak(Token::OP_MULTIPLY))
@@ -261,7 +260,7 @@ std::shared_ptr<Expr> Parser::expr_multiply()
 }
 
 // Expr1      = { Expr2 ~ (("+"|"-") ~ Expr2)* }
-std::shared_ptr<Expr> Parser::expr_sum_or_subtract()
+shared_ptr<Expr> Parser::expr_sum_or_subtract()
 {
     auto expr = expr_multiply();
     while (peak(Token::OP_ADD) || peak(Token::OP_SUBTRACT))
@@ -281,7 +280,7 @@ std::shared_ptr<Expr> Parser::expr_sum_or_subtract()
 }
 
 // Expr3      = { (Expr4 ~ "'") | Expr4 }
-std::shared_ptr<Expr> Parser::expr_derive()
+shared_ptr<Expr> Parser::expr_derive()
 {
     auto expr = expr_sum_or_subtract();
     if (peak(Token::OP_DERIVE))
@@ -294,7 +293,7 @@ std::shared_ptr<Expr> Parser::expr_derive()
 }
 
 // ExprEval  = { Expr1 ~ ("!" ~ "-"? ~ Integer)? }
-std::shared_ptr<ast::Expr> Parser::expr_eval()
+shared_ptr<ast::Expr> Parser::expr_eval()
 {
     auto expr = expr_derive();
     if (peak(Token::OP_BANG))
@@ -313,7 +312,7 @@ std::shared_ptr<ast::Expr> Parser::expr_eval()
 }
 
 // Expr0      = { Expr1 ~ ("==" ~ Expr1)* }
-std::shared_ptr<Expr> Parser::expr_equal()
+shared_ptr<Expr> Parser::expr_equal()
 {
     auto expr = expr_eval();
     while (peak(Token::OP_EQ))
@@ -326,7 +325,7 @@ std::shared_ptr<Expr> Parser::expr_equal()
                 throw bad_cast();
             expr_bin.right = make_shared<Binary>(expr_bin.right, Binary::EQUAL, expr_eval());
         }
-        catch (std::bad_cast)
+        catch (bad_cast &)
         {
             expr = make_shared<Binary>(expr, Binary::EQUAL, expr_eval());
         }
@@ -335,7 +334,7 @@ std::shared_ptr<Expr> Parser::expr_equal()
 }
 
 // Expr       = { (Expr0 ~ "=")* ~ Expr0 }
-std::shared_ptr<Expr> Parser::expr()
+shared_ptr<Expr> Parser::expr()
 {
     auto expr = expr_equal();
     while (peak(Token::OP_ASSIGN))
@@ -346,7 +345,7 @@ std::shared_ptr<Expr> Parser::expr()
             auto &expr_bin = dynamic_cast<BinaryAssign &>(*expr);
             expr_bin.value = make_shared<BinaryAssign>(expr_bin.value, expr_equal());
         }
-        catch (std::bad_cast)
+        catch (bad_cast &)
         {
             expr = make_shared<BinaryAssign>(expr, expr_equal());
         }

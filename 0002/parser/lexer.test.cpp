@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include "lexer.hpp"
+#include <iterator>
 #include "catch.hpp"
 #include "error.hpp"
 

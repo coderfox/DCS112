@@ -7,8 +7,8 @@ Token::Token(Type type, Span span) : HasSpan(span), type(type)
 }
 
 Token::Token(Type type,
-             std::string::const_iterator begin,
-             std::string::const_iterator end) : Token(type, Span(begin, end))
+             string::const_iterator begin,
+             string::const_iterator end) : Token(type, Span(begin, end))
 {
 }
 
@@ -91,7 +91,7 @@ string Token::to_string() const
     return str;
 }
 
-std::ostream &operator<<(std::ostream &out, const Token &token)
+ostream &operator<<(ostream &out, const Token &token)
 {
     return out << token.to_string();
 }

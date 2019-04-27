@@ -12,6 +12,8 @@
     bool operator==(const Expr &rhs) const; \
     std::ostream &print(std::ostream &out) const;
 
+std::ostream &operator<<(std::ostream &out, const ast::Expr &value);
+
 namespace ast
 {
 
@@ -21,7 +23,7 @@ struct Expr
     virtual bool operator==(const Expr &rhs) const = 0;
     bool operator!=(const Expr &rhs) const;
     virtual std::ostream &print(std::ostream &out) const = 0;
-    friend std::ostream &operator<<(std::ostream &out, const Expr &value);
+    friend std::ostream & ::operator<<(std::ostream &out, const Expr &value);
 };
 
 struct Ident final : public Expr
@@ -35,7 +37,7 @@ struct Ident final : public Expr
 
 struct Monomial final : public Expr
 {
-    unsigned int coefficient;
+    int coefficient;
     unsigned int power;
 
     Monomial(unsigned int coefficient, unsigned int power);

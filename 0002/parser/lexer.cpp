@@ -1,9 +1,23 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <cctype>
 #include "lexer.hpp"
 #include "token.hpp"
 #include "error.hpp"
+
+bool match_digit(char chr)
+{
+    return isdigit(chr);
+}
+bool match_alpha(char chr)
+{
+    return isalnum(chr) || chr == '_';
+}
+bool match_space(char chr)
+{
+    return isspace(chr);
+}
 
 #define RETURN_IF_PARSED(fn)        \
     {                               \
@@ -15,7 +29,7 @@
 using namespace std;
 
 // ===== Common Functions =====
-char Lexer::match(function<int(char)> cur_cond)
+char Lexer::match(function<bool(char)> cur_cond)
 {
     if (finished())
         return '\0';
@@ -29,7 +43,7 @@ char Lexer::match(function<int(char)> cur_cond)
         return '\0';
 }
 
-pair<char, char> Lexer::match(function<int(char, char)> cond)
+pair<char, char> Lexer::match(function<bool(char, char)> cond)
 {
     if (finished())
         return make_pair('\0', '\0');
@@ -121,7 +135,7 @@ Token Lexer::integer()
     string data;
     char to_push;
     auto begin = _current;
-    while ((to_push = match(isnumber)) != '\0')
+    while ((to_push = match(match_digit)) != '\0')
     {
         data.push_back(to_push);
     }
@@ -137,7 +151,7 @@ Token Lexer::ident()
     string data;
     char to_push;
     auto begin = _current;
-    while ((to_push = match(isalpha)) != '\0')
+    while ((to_push = match(match_alpha)) != '\0')
     {
         data.push_back(to_push);
     }
@@ -244,7 +258,7 @@ Token Lexer::bang()
 
 void Lexer::whitespace()
 {
-    while (match(isspace) != '\0')
+    while (match(match_space) != '\0')
     {
     }
 }

@@ -20,7 +20,7 @@ string Span::to_string() const
     return '\"' + string(begin, end) + '\"';
 }
 
-std::ostream &operator<<(std::ostream &out, const Span &span)
+ostream &operator<<(ostream &out, const Span &span)
 {
     return out << span.to_string();
 }
@@ -39,7 +39,7 @@ string HasSpan::to_string() const
     return _span.to_string();
 }
 
-std::ostream &operator<<(std::ostream &out, const HasSpan &span)
+ostream &operator<<(ostream &out, const HasSpan &span)
 {
     return out << span.to_string();
 }

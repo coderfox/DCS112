@@ -16,7 +16,7 @@ int main()
             cout << "| "
                  << setw(4) << "name"
                  << " | "
-                 << setw(48) << "value"
+                 << setw(48) << left << "value"
                  << " |" << endl;
             cout << "| "
                  << string(4, '-') << " | "
@@ -25,12 +25,16 @@ int main()
             {
                 cout << "| "
                      << setw(4) << it.first << " | "
-                     << setw(48) << it.second.to_string() << " |" << endl;
+                     << setw(48) << left << it.second.to_string() << " |" << endl;
             }
+            cout << endl
+                 << "| "
+                 << setw(48) << left << "History"
+                 << " |" << endl;
             for (auto it : host.get_history())
             {
                 cout << "| "
-                     << setw(48) << it.to_string() << " |" << endl;
+                     << setw(48) << left << it.to_string() << " |" << endl;
             }
         }
         catch (Error e)

@@ -11,7 +11,7 @@ using namespace ast;
 
 // ===== Constructor =====
 
-Ident::Ident(std::string value) : value(value)
+Ident::Ident(string value) : value(value)
 {
 }
 
@@ -20,24 +20,24 @@ Monomial::Monomial(unsigned int coefficient,
 {
 }
 
-Unary::Unary(Op op, std::shared_ptr<Expr> operand) : op(op), operand(operand)
+Unary::Unary(Op op, shared_ptr<Expr> operand) : op(op), operand(operand)
 {
 }
 
-Binary::Binary(std::shared_ptr<Expr> left,
+Binary::Binary(shared_ptr<Expr> left,
                Op op,
-               std::shared_ptr<Expr> right) : left(left), op(op), right(right)
+               shared_ptr<Expr> right) : left(left), op(op), right(right)
 {
 }
 
 BinaryAssign::BinaryAssign(
-    std::shared_ptr<Expr> id,
-    std::shared_ptr<Expr> value) : id(id), value(value)
+    shared_ptr<Expr> id,
+    shared_ptr<Expr> value) : id(id), value(value)
 {
 }
 
 BinaryEval::BinaryEval(
-    std::shared_ptr<Expr> expr, int x) : x(x), expr(expr)
+    shared_ptr<Expr> expr, int x) : x(x), expr(expr)
 {
 }
 
@@ -101,7 +101,7 @@ IMPL_ACCEPT(BinaryEval)
 
 // ===== Output =====
 
-std::ostream &ast::operator<<(std::ostream &out, const Expr &value)
+ostream &operator<<(ostream &out, const Expr &value)
 {
     return value.print(out);
 }

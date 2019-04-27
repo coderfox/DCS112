@@ -69,12 +69,12 @@ TEST_CASE("class Parser > parsers")
     SECTION("expr_terminal")
     {
         {
-            PARSER("(1,2)(2,3)")
+            PARSER("(1,2)(-2,3)")
             REQUIRE(*parser.expr_terminal() ==
                     ast::Binary(
                         make_shared<ast::Monomial>(1, 2),
                         ast::Binary::ADD,
-                        make_shared<ast::Monomial>(2, 3)));
+                        make_shared<ast::Monomial>(-2, 3)));
         }
         {
             PARSER("x^2")
@@ -260,9 +260,15 @@ TEST_CASE("class Parser > parsers")
         catch (Error e)
         {
             REQUIRE(e.to_string() ==
-                    "p=(q\n"
-                    "    ^\n"
+                    "INPUT:4: p=(q\n"
+                    "             ^\n"
                     "Expected: OP_RPAREN, ");
         }
     }
+}
+
+TEST_CASE("class Parser > parsers # empty")
+{
+    PARSER("")
+    REQUIRE_THROWS_AS(parser.expr(), Error);
 }

@@ -13,8 +13,8 @@ TEST_CASE("class Error", "[parser][error]")
         vector<string>{"hello", "world"});
     SECTION("to_string")
     {
-        REQUIRE(error.to_string() == "sample error input\n"
-                                     "       ^^^^^\n"
+        REQUIRE(error.to_string() == "INPUT:7: sample error input\n"
+                                     "                ^^^^^\n"
                                      "Expected: hello, world, ");
     }
 }

@@ -1,4 +1,5 @@
 #include <sstream>
+#include <algorithm>
 #include "evaluator.hpp"
 #include "parser/lexer.hpp"
 #include "parser/parser.hpp"
@@ -7,7 +8,7 @@ Evaluator::Evaluator()
 {
 }
 
-Polynomial Evaluator::eval(std::string code)
+Polynomial Evaluator::eval(string code)
 {
     auto lexer = Lexer(code);
     lexer.parse();
@@ -38,7 +39,7 @@ void Evaluator::visit(const ast::Ident &value)
     {
         _state.push_back(_context.at(value.value));
     }
-    catch (out_of_range)
+    catch (out_of_range &)
     {
         throw "Undefined variable " + value.value;
     }
@@ -98,7 +99,7 @@ void Evaluator::visit(const ast::BinaryAssign &value)
         auto left = dynamic_cast<const ast::Ident &>(*value.id);
         id = left.value;
     }
-    catch (bad_cast)
+    catch (bad_cast &)
     {
         stringstream ss;
         ss << "Invalid left operand ("
