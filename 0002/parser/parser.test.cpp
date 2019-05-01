@@ -293,10 +293,14 @@ TEST_CASE("class Parser > parsers")
         }
         catch (Error e)
         {
+#ifdef NO_COLOR_OUTPUT
             REQUIRE(e.to_string() ==
                     "INPUT:4: p=(q\n"
                     "             ^\n"
                     "Expected: ')'");
+#else
+            REQUIRE_NOTHROW(e.to_string());
+#endif
         }
     }
 }
@@ -305,4 +309,18 @@ TEST_CASE("class Parser > parsers # empty")
 {
     PARSER("")
     REQUIRE_THROWS_AS(parser.expr(), Error);
+}
+
+TEST_CASE("class Parser > parsers # end expect")
+{
+    PARSER("2x^")
+    REQUIRE_THROWS_AS(parser.expr(), Error);
+    try
+    {
+        parser.expr();
+    }
+    catch (Error e)
+    {
+        REQUIRE_NOTHROW(e.to_string());
+    }
 }

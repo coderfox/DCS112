@@ -68,12 +68,15 @@ bool Parser::peak(Token::Type cur_ty, Token::Type next_ty, Token::Type next2_ty)
 
 Error Parser::make_error(string message)
 {
-    return Error(_begin->get_span() + (_end - 1)->get_span(),
-                 _current >= _end ? Span(
-                                        (_end - 1)->get_span().end,
-                                        (_end - 1)->get_span().end)
-                                  : _current->get_span(),
-                 message);
+    if (_begin < _end)
+        return Error(_begin->get_span() + (_end - 1)->get_span(),
+                     _current >= _end ? Span(
+                                            (_end - 1)->get_span().end,
+                                            (_end - 1)->get_span().end)
+                                      : _current->get_span(),
+                     message);
+    else
+        return Error(string(), message);
 }
 
 // ===== Constructors =====
@@ -119,7 +122,10 @@ shared_ptr<Expr> Parser::term_ident()
     {
         MARK_SPAN_BEGIN;
         auto token = match(Token::IDENTIFIER);
-        return make_shared<Ident>(MARK_SPAN_GEN(1), string(token.get_span().begin, token.get_span().end));
+        return make_shared<Ident>(
+            MARK_SPAN_GEN(1),
+            string(token.get_span().begin,
+                   token.get_span().end));
     }
     catch (Token::Type)
     {
@@ -343,11 +349,11 @@ shared_ptr<Expr> Parser::expr_equal()
             auto &expr_bin = dynamic_cast<Binary &>(*expr);
             if (expr_bin.op != Binary::EQUAL)
                 throw bad_cast();
-            expr_bin.right = make_shared<Binary>(MARK_SPAN_GEN(1), expr_bin.right, Binary::EQUAL, expr_eval());
+            expr_bin.right = make_shared<Binary>(MARK_SPAN_GEN(2), expr_bin.right, Binary::EQUAL, expr_eval());
         }
         catch (bad_cast &)
         {
-            expr = make_shared<Binary>(MARK_SPAN_GEN(1), expr, Binary::EQUAL, expr_eval());
+            expr = make_shared<Binary>(MARK_SPAN_GEN(2), expr, Binary::EQUAL, expr_eval());
         }
     }
     return expr;

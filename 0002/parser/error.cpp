@@ -9,15 +9,28 @@
 
 using namespace std;
 
+Error::Error(string total,
+             string message,
+             unsigned int begin,
+             unsigned int length) : total(total),
+                                    begin(begin),
+                                    length(length),
+                                    message(message)
+{
+    if (length <= 0)
+    {
+        this->total.push_back(' ');
+        this->length = 1;
+    }
+}
+
 Error::Error(Span total_span,
              Span error_span,
-             string message) : message(message)
+             string message) : Error(string(total_span.begin, total_span.end),
+                                     message,
+                                     distance(total_span.begin, error_span.begin),
+                                     distance(error_span.begin, error_span.end))
 {
-    total = string(total_span.begin, total_span.end);
-    begin = distance(total_span.begin, error_span.begin);
-    length = distance(error_span.begin, error_span.end);
-    if (length <= 0)
-        length = 1;
 }
 
 string Error::to_string() const
@@ -29,6 +42,13 @@ string Error::to_string() const
 
 ostream &operator<<(ostream &out, const Error &error)
 {
+    // 2x!5!!
+    // 012345
+    // cout << "DEBUG: (" << error.total << ") 0, " << error.begin << ", " << error.begin + error.length << endl;
+    assert(error.length >= 1);
+    assert(error.begin + error.length <= error.total.size());
+    // assert(error.total.substr(error.begin, error.begin + error.length) == " ");
+
     string hint = "INPUT:" + to_string(error.begin) + ": ";
     out
         // output hint line

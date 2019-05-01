@@ -229,7 +229,7 @@ TEST_CASE("class Lexer > parsers # fix last token", "[parser][lexer]")
 
 TEST_CASE("class Lexer > parsers # fix single token", "[parser][lexer]")
 {
-    //              012
+    //                  012
     auto lexer = Lexer("999");
     lexer.parse();
     REQUIRE(lexer.token_count() == 1);
@@ -239,5 +239,19 @@ TEST_CASE("class Lexer > parsers # fix empty", "[parser][lexer]")
 {
     auto lexer = Lexer("");
     REQUIRE_NOTHROW(lexer.parse());
-    REQUIRE(lexer.token_count() == 1);
+    REQUIRE(lexer.token_count() == 0);
+}
+
+TEST_CASE("class Lexer > parsers # fix unexpected", "[parser][lexer]")
+{
+    auto lexer = Lexer("#");
+    // REQUIRE_THROWS_AS(lexer.parse(), Error);
+    try
+    {
+        lexer.parse();
+    }
+    catch (Error e)
+    {
+        REQUIRE_NOTHROW(e.to_string());
+    }
 }

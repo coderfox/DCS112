@@ -22,5 +22,15 @@ TEST_CASE("class Error", "[parser][error]")
 #endif
     }
 }
+TEST_CASE("class Error # empty", "[parser][error]")
+{
+    string input = "";
+    auto error = Error(
+        Span(input.cend(), input.cend()),
+        Span(input.cend(), input.cend()),
+        "Expected: hello, world, ");
+    SECTION("to_string")
+    {
+        REQUIRE_NOTHROW(error.to_string());
     }
 }
