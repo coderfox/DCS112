@@ -1,10 +1,11 @@
+#include <iostream>
 #include <sstream>
 #include <exception>
 #include <iterator>
 #include <string>
+#include <cassert>
 #include "error.hpp"
-
-#define COLOR_OUTPUT
+#include "color.hpp"
 
 using namespace std;
 
@@ -29,19 +30,20 @@ string Error::to_string() const
 ostream &operator<<(ostream &out, const Error &error)
 {
     string hint = "INPUT:" + to_string(error.begin) + ": ";
-#ifdef COLOR_OUTPUT
-    out << "\033[33m" << hint << "\033[0m"
+    out
+        // output hint line
+        << color::FG_YELLOW << hint << color::OP_RESET
+        // output string before error
         << error.total.substr(0, error.begin)
-        << "\033[41m" << error.total.substr(error.begin, error.begin + error.length) << "\033[0m"
+        // output error section
+        << color::BG_RED << color::OP_BOLD << error.total.substr(error.begin, error.length) << color::OP_RESET
+        // output rest string
         << error.total.substr(error.begin + error.length) << endl
-        << "\033[31m"
-        << "Error: "
-        << "\033[0m" << error.message;
-#else
-    out << hint << error.total << endl
+        // output hint line
         << string(hint.length() + error.begin, ' ')
-        << string(error.length, '^') << endl
-        << error.message;
-#endif
+        << color::FG_YELLOW << string(error.length, '^') << color::OP_RESET << endl
+        // output error message
+        << color::FG_RED << "Error: " << color::OP_RESET
+        << color::OP_BOLD << error.message << color::OP_RESET;
     return out;
 }

@@ -1,5 +1,6 @@
 CC=clang++
 CFLAGS=-Wall -Wextra -std=c++14 -g -I lib -I .
+FFLAGS= # -DNO_COLOR_OUTPUT
 ODIR=obj
 BIN=main
 BIN_TEST=main.test
@@ -17,7 +18,7 @@ _OBJ_TEST = main.test.o polynomial.test.o evaluator.test.o \
 OBJ_TEST = $(patsubst %,$(ODIR)/%,$(_OBJ_TEST))
 
 $(ODIR)/%.o: %.cpp | $(ODIR)/
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(FFLAGS)
 
 $(BIN): $(OBJ) $(OBJ_MAIN)
 	$(CC) -o $(BIN) $^ $(CFLAGS)

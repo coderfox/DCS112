@@ -13,8 +13,14 @@ TEST_CASE("class Error", "[parser][error]")
         "Expected: hello, world, ");
     SECTION("to_string")
     {
+#ifdef NO_COLOR_OUTPUT
         REQUIRE(error.to_string() == "INPUT:7: sample error input\n"
                                      "                ^^^^^\n"
                                      "Expected: hello, world, ");
+#else
+        REQUIRE_NOTHROW(error.to_string());
+#endif
+    }
+}
     }
 }

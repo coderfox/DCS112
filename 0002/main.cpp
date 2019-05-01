@@ -1,8 +1,7 @@
 #include <iomanip>
+#include "color.hpp"
 #include "parser/error.hpp"
 #include "evaluator.hpp"
-
-#define COLOR_OUTPUT
 
 using namespace std;
 
@@ -10,19 +9,16 @@ int main()
 {
     Evaluator host;
     string str;
-#ifdef COLOR_OUTPUT
-    while (cout << "\033[4;36m"
-                << "polynomial>"
-                << "\033[0m ",
+    while (cout << color::FG_CYAN << "polynomial> " << color::OP_RESET,
            getline(cin, str))
-#else
-    while (cout << "polynomial> ", getline(cin, str))
-#endif
     {
+        if (str.empty())
+            continue;
         try
         {
             auto poly = host.eval(str);
-            cout << "Result = " << poly << endl;
+            cout << color::FG_GREEN << "Result = " << color::OP_RESET
+                 << poly << endl;
             cout << "| "
                  << setw(4) << "name"
                  << " | "
