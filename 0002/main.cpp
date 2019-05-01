@@ -47,6 +47,13 @@ int main()
         {
             cerr << e << endl;
         }
+        catch (vector<Error> es)
+        {
+            for (auto it : es)
+            {
+                cout << it << endl;
+            }
+        }
     }
     return 0;
 }

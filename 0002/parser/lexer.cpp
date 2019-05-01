@@ -266,20 +266,28 @@ void Lexer::whitespace()
 //===== Parse Function =====
 void Lexer::parse()
 {
+    vector<Error> errors;
     do
     {
         auto token = advance();
         if (!token.is(Token::VOID))
             _tokens.push_back(token);
         else if (!finished())
-            throw Error(Span(cstr_begin(), cstr_end()),
-                        Span(_current, _current + 1),
-                        "Unexpected token: '" + token.get_span().to_string() + "'");
+        {
+            auto chr = progress();
+            errors.push_back(
+                Error(
+                    Span(cstr_begin(), cstr_end()),
+                    Span(_current - 1, _current),
+                    string("Unexpected token: '") + chr + "'"));
+        }
     } while (!finished());
-    if (_tokens.size() == 0)
-    {
-        _tokens.push_back(Token(Token::VOID, cstr_begin(), cstr_end()));
-    }
+    if (!errors.empty())
+        throw errors;
+    // if (_tokens.size() == 0)
+    // {
+    //     _tokens.push_back(Token(Token::VOID, cstr_begin(), cstr_end()));
+    // }
 }
 
 Token Lexer::advance()
