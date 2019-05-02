@@ -206,7 +206,7 @@ TEST_CASE("class Lexer > parsers", "[parser][lexer]")
     }
     SECTION("wrong")
     {
-        REQUIRE_THROWS_AS(lexer_wrong.parse(), Error);
+        REQUIRE_THROWS_AS(lexer_wrong.parse(), vector<Error>);
     }
 }
 
@@ -245,13 +245,15 @@ TEST_CASE("class Lexer > parsers # fix empty", "[parser][lexer]")
 TEST_CASE("class Lexer > parsers # fix unexpected", "[parser][lexer]")
 {
     auto lexer = Lexer("#");
-    // REQUIRE_THROWS_AS(lexer.parse(), Error);
+
+    // REQUIRE_THROWS_AS(lexer.parse(), vector<Error>);
     try
     {
         lexer.parse();
     }
-    catch (Error e)
+    catch (vector<Error> es)
     {
-        REQUIRE_NOTHROW(e.to_string());
+        for (auto it : es)
+            REQUIRE_NOTHROW(it.to_string());
     }
 }

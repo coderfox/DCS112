@@ -275,6 +275,7 @@ void Lexer::parse()
         else if (!finished())
         {
             auto chr = progress();
+            assert(_current - 1 >= _begin);
             errors.push_back(
                 Error(
                     Span(cstr_begin(), cstr_end()),
