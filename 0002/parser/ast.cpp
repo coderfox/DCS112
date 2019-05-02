@@ -54,11 +54,6 @@ BinaryEval::BinaryEval(
 {
 }
 
-FnCall::FnCall(Span span,
-               string fn, shared_ptr<Expr> arg) : Expr(span), fn(fn), arg(arg)
-{
-}
-
 // ===== Equal =====
 
 bool Expr::operator!=(const Expr &rhs) const
@@ -108,13 +103,6 @@ bool BinaryEval::operator==(const Expr &rhs) const
            (x == dynamic_cast<const BinaryEval &>(rhs).x);
 }
 
-bool FnCall::operator==(const Expr &rhs) const
-{
-    return typeid(*this) == typeid(rhs) &&
-           (fn == dynamic_cast<const FnCall &>(rhs).fn) &&
-           (*arg == *dynamic_cast<const FnCall &>(rhs).arg);
-}
-
 // ===== Accept =====
 
 IMPL_ACCEPT(Ident)
@@ -123,7 +111,6 @@ IMPL_ACCEPT(Unary)
 IMPL_ACCEPT(Binary)
 IMPL_ACCEPT(BinaryAssign)
 IMPL_ACCEPT(BinaryEval)
-IMPL_ACCEPT(FnCall)
 
 // ===== Output =====
 
@@ -195,13 +182,5 @@ ostream &BinaryAssign::print(ostream &out) const
     out << "BinaryAssign { "
         << *id << " (=) "
         << *value << " }";
-    return out;
-}
-
-ostream &FnCall::print(ostream &out) const
-{
-    out << "FnCall { "
-        << fn << " "
-        << *arg << " }";
     return out;
 }

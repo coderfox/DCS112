@@ -10,7 +10,6 @@ struct Unary;
 struct Binary;
 struct BinaryAssign;
 struct BinaryEval;
-struct FnCall;
 
 } // namespace ast
 
@@ -23,5 +22,4 @@ class Visitor
     virtual void visit(const ast::Binary &value) = 0;
     virtual void visit(const ast::BinaryAssign &value) = 0;
     virtual void visit(const ast::BinaryEval &value) = 0;
-    virtual void visit(const ast::FnCall &value) = 0;
 };
