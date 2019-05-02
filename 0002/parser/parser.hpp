@@ -19,8 +19,7 @@ class Parser
     bool peak(Token::Type cur_ty);
     bool peak(Token::Type cur_ty, Token::Type next_ty);
     bool peak(Token::Type cur_ty, Token::Type next_ty, Token::Type next2_ty);
-    Error make_error(std::string expected);
-    Error make_error(std::vector<std::string> expected);
+    Error make_error(std::string expected, bool to_end = false);
 
   public:
     // ===== Constructors =====

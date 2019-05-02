@@ -66,15 +66,22 @@ bool Parser::peak(Token::Type cur_ty, Token::Type next_ty, Token::Type next2_ty)
            *(_current + 2) == next2_ty;
 }
 
-Error Parser::make_error(string message)
+Error Parser::make_error(string message, bool to_end)
 {
     if (_begin < _end)
-        return Error(_begin->get_span() + (_end - 1)->get_span(),
-                     _current >= _end ? Span(
-                                            (_end - 1)->get_span().end,
-                                            (_end - 1)->get_span().end)
-                                      : _current->get_span(),
-                     message);
+    {
+        Span span = _current->get_span();
+        if (_current >= _end)
+            span = Span(
+                (_end - 1)->get_span().end,
+                (_end - 1)->get_span().end);
+        else
+        {
+            if (to_end)
+                span = span + (_end - 1)->get_span();
+        }
+        return Error(_begin->get_span() + (_end - 1)->get_span(), span, message);
+    }
     else
         return Error(string(), message);
 }
@@ -384,6 +391,6 @@ void Parser::ensure_finished()
 {
     if (_current != _end)
     {
-        throw make_error("Expected: END_OF_INPUT");
+        throw make_error("Expected: END_OF_INPUT", true);
     }
 }
