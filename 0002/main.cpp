@@ -1,47 +1,57 @@
+#include <iostream>
 #include <iomanip>
 #include "color.hpp"
 #include "parser/error.hpp"
 #include "evaluator.hpp"
+#include "getline.hpp"
+#include "ui.hpp"
+
+#ifndef NO_LINENOISE
+#include "linenoise.hpp"
+#endif
 
 using namespace std;
 
 int main()
 {
     Evaluator host;
-    string str;
-    while (cout << color::FG_CYAN << "polynomial> " << color::OP_RESET,
-           getline(cin, str))
+    handle_help();
+
+    pair<bool, string> input;
+    while (input = getline("calculator> "), input.first)
     {
+        auto str = input.second;
         if (str.empty())
             continue;
+
         try
         {
-            auto poly = host.eval(str);
-            cout << color::FG_GREEN << "Result = " << color::OP_RESET
-                 << poly << endl;
-            cout << "| "
-                 << setw(4) << "name"
-                 << " | "
-                 << setw(48) << left << "value"
-                 << " |" << endl;
-            cout << "| "
-                 << string(4, '-') << " | "
-                 << string(48, '-') << " |" << endl;
-            for (auto it : host.get_variables())
+            if (str == "help")
+                handle_help();
+            else if (str == "help-extra")
+                handle_help(true);
+            else if (str == "add")
+                handle_add(host);
+            else if (str == "mul")
+                handle_multiply(host);
+            else if (str == "minus")
+                handle_minus(host);
+            else if (str == "eval")
+                handle_evaluate(host);
+            else if (str == "equal")
+                handle_equal(host);
+            else if (str == "derive")
+                handle_derive(host);
+            else if (str == "history")
+                handle_history(host);
+            else if (str == "memory")
+                handle_memory(host);
+            else if (str == "exit")
             {
-                cout << "| "
-                     << setw(4) << it.first << " | "
-                     << setw(48) << left << it.second.to_string() << " |" << endl;
+                break;
             }
-            cout << endl
-                 << "| "
-                 << setw(48) << left << "History"
-                 << " |" << endl;
-            for (auto it : host.get_history())
-            {
-                cout << "| "
-                     << setw(48) << left << it.to_string() << " |" << endl;
-            }
+            else
+                handle_plain(host, str);
         }
         catch (Error e)
         {
@@ -55,5 +65,7 @@ int main()
             }
         }
     }
+    handle_exit();
+
     return 0;
 }

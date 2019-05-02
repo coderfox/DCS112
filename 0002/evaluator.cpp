@@ -25,6 +25,13 @@ Polynomial Evaluator::eval(string code)
     return _state.back();
 }
 
+Polynomial Evaluator::eval_discard(string code)
+{
+    auto poly = eval(code);
+    _state.pop_back();
+    return poly;
+}
+
 vector<pair<string, Polynomial>> Evaluator::get_variables() const
 {
     vector<pair<string, Polynomial>> vars;

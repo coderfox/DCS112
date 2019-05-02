@@ -1,11 +1,11 @@
 CC=clang++
 CFLAGS=-Wall -Wextra -std=c++14 -g -I lib -I .
-FFLAGS= # -DNO_COLOR_OUTPUT
+FFLAGS= # -DNO_COLOR_OUTPUT -DNO_LINENOISE
 ODIR=obj
 BIN=main
 BIN_TEST=main.test
 
-_OBJ = polynomial.o evaluator.o \
+_OBJ = polynomial.o evaluator.o ui.o getline.o \
 	parser/span.o parser/lexer.o parser/token.o \
 	parser/parser.o parser/error.o parser/ast.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
