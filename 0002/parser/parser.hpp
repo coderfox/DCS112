@@ -57,5 +57,7 @@ class Parser
     std::shared_ptr<ast::Expr> expr_equal();
     // Expr       = { (Expr0 ~ "=")* ~ Expr0 }
     std::shared_ptr<ast::Expr> expr();
+    // FnCall     = { Ident ~ Expr* }
+    std::shared_ptr<ast::Expr> fn_call();
     void ensure_finished();
 };

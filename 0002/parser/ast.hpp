@@ -103,4 +103,14 @@ struct BinaryEval final : public Expr
     DECL_INHERIT_FUNCS(BinaryEval)
 };
 
+struct FnCall final : public Expr
+{
+    std::string fn;
+    std::shared_ptr<Expr> arg;
+
+    FnCall(Span span, std::string fn, std::shared_ptr<Expr> arg);
+
+    DECL_INHERIT_FUNCS(FnCall)
+};
+
 } // namespace ast
