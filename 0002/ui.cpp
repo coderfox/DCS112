@@ -134,7 +134,7 @@ void handle_evaluate(Evaluator &host)
     auto rhs_parsed = host.eval_discard(rhs);
 
     stringstream ss;
-    ss << "( " << lhs << " )!( " << rhs << " )";
+    ss << "( " << lhs << " )! " << rhs;
     eval_print(host, ss.str());
 }
 
