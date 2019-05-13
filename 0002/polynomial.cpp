@@ -53,6 +53,7 @@ int &Polynomial::operator[](unsigned int rhs)
 {
     return _coefficients[rhs];
 }
+
 int Polynomial::get(unsigned int power) const
 {
     try

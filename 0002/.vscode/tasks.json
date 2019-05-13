@@ -6,7 +6,7 @@
     {
       "label": "compile",
       "type": "shell",
-      "command": "make main.test",
+      "command": "make main",
       "presentation": {
         "echo": true,
         "reveal": "silent",

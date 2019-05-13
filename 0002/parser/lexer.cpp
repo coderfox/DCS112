@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <cctype>
+#include <cassert>
 #include "lexer.hpp"
 #include "token.hpp"
 #include "error.hpp"
@@ -285,10 +286,6 @@ void Lexer::parse()
     } while (!finished());
     if (!errors.empty())
         throw errors;
-    // if (_tokens.size() == 0)
-    // {
-    //     _tokens.push_back(Token(Token::VOID, cstr_begin(), cstr_end()));
-    // }
 }
 
 Token Lexer::advance()

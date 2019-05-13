@@ -8,7 +8,7 @@
 
 需要安装有 C++ 编译器，编译器需要支持 `-std=c++14`。需要安装有 GMU Make。
 
-编译过程依赖标准的 POSIX Shell 环境。
+编译过程依赖标准的 POSIX Shell 环境，不支持 MSVC 编译器或 Windows 操作系统。
 
 ## 构建说明
 
@@ -39,6 +39,17 @@ make -j8
 ```sh
 make ODIR=tmp
 ```
+
+### 功能开关
+
+本项目可以通过编译指令控制色彩输出、linenoise 两项功能的开关。
+
+```shell
+make FFLAGS=-DNO_COLOR_OUTPUT
+make FFLAGS=-DNO_LINENOISE
+```
+
+在关闭 linenoise 的情况下，本项目的可执行文件不依赖任何外部代码。
 
 ## 使用说明
 

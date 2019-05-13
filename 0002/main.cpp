@@ -18,7 +18,7 @@ int main()
     handle_help();
 
     pair<bool, string> input;
-    while (input = getline("calculator> "), input.first)
+    while (input = getline("calc> "), input.first)
     {
         auto str = input.second;
         if (str.empty())

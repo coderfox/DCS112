@@ -39,6 +39,7 @@ void handle_help(bool extra)
     print_help_item("derive", "derive a polynomial");
     print_help_item("exit", "exit calculator");
     print_help_item("(expr)", "simplify the given expression");
+    print_help_item("", "press RETURN at any time to return to main menu");
 
     if (extra)
     {

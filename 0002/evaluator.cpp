@@ -13,14 +13,9 @@ Polynomial Evaluator::eval(string code)
     _current_str = code;
     auto lexer = Lexer(_current_str);
     lexer.parse();
-    // for (auto iter = lexer.cbegin(); iter != lexer.cend(); iter++)
-    // {
-    //     cout << *iter;
-    // }
     auto parser = Parser(lexer.cbegin(), lexer.cend());
     auto expr = parser.expr();
     parser.ensure_finished();
-    // cout << *expr << endl;
     expr->accept(*this);
     return _state.back();
 }
