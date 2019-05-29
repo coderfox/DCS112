@@ -53,13 +53,14 @@ int &Polynomial::operator[](unsigned int rhs)
 {
     return _coefficients[rhs];
 }
+
 int Polynomial::get(unsigned int power) const
 {
     try
     {
         return _coefficients.at(power);
     }
-    catch (out_of_range)
+    catch (out_of_range &)
     {
         return 0;
     }
@@ -143,7 +144,7 @@ int Polynomial::eval(int x) const
 
 // ===== I/O =====
 
-std::string Polynomial::to_string() const
+string Polynomial::to_string() const
 {
     stringstream ss;
     ss << *this;

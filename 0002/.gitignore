@@ -1,5 +1,6 @@
 *.dSYM
 obj
+obj-g++
 *.pdf
 main
 main.test

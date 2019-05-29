@@ -11,33 +11,46 @@ using namespace ast;
 
 // ===== Constructor =====
 
-Ident::Ident(std::string value) : value(value)
+Expr::Expr(Span span) : HasSpan(span)
 {
 }
 
-Monomial::Monomial(unsigned int coefficient,
-                   unsigned int power) : coefficient(coefficient), power(power)
+Ident::Ident(Span span, string value) : Expr(span), value(value)
 {
 }
 
-Unary::Unary(Op op, std::shared_ptr<Expr> operand) : op(op), operand(operand)
+Monomial::Monomial(
+    Span span,
+    int coefficient,
+    unsigned int power) : Expr(span), coefficient(coefficient), power(power)
 {
 }
 
-Binary::Binary(std::shared_ptr<Expr> left,
-               Op op,
-               std::shared_ptr<Expr> right) : left(left), op(op), right(right)
+Unary::Unary(
+    Span span,
+    Op op,
+    shared_ptr<Expr> operand) : Expr(span), op(op), operand(operand)
+{
+}
+
+Binary::Binary(
+    Span span,
+    shared_ptr<Expr> left,
+    Op op,
+    shared_ptr<Expr> right) : Expr(span), left(left), op(op), right(right)
 {
 }
 
 BinaryAssign::BinaryAssign(
-    std::shared_ptr<Expr> id,
-    std::shared_ptr<Expr> value) : id(id), value(value)
+    Span span,
+    shared_ptr<Expr> id,
+    shared_ptr<Expr> value) : Expr(span), id(id), value(value)
 {
 }
 
 BinaryEval::BinaryEval(
-    std::shared_ptr<Expr> expr, int x) : x(x), expr(expr)
+    Span span,
+    shared_ptr<Expr> expr, int x) : Expr(span), x(x), expr(expr)
 {
 }
 
@@ -101,7 +114,7 @@ IMPL_ACCEPT(BinaryEval)
 
 // ===== Output =====
 
-std::ostream &ast::operator<<(std::ostream &out, const Expr &value)
+ostream &operator<<(ostream &out, const Expr &value)
 {
     return value.print(out);
 }

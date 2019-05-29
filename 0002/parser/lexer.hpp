@@ -13,8 +13,8 @@ class Lexer
     std::vector<Token> _tokens;
 
     // ===== Common Functions =====
-    char match(std::function<int(char)> cur_cond);
-    std::pair<char, char> match(std::function<int(char, char)> cond);
+    char match(std::function<bool(char)> cur_cond);
+    std::pair<char, char> match(std::function<bool(char, char)> cond);
     bool match(char cur);
     bool match(char cur, char next);
     char progress();

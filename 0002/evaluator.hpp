@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <map>
 #include "polynomial.hpp"
@@ -11,11 +13,13 @@ class Evaluator final : public Visitor
   private:
     std::map<std::string, Polynomial> _context;
     std::vector<Polynomial> _state;
+    std::string _current_str;
 
   public:
     Evaluator();
 
     Polynomial eval(std::string expr);
+    Polynomial eval_discard(std::string expr);
     std::vector<std::pair<std::string, Polynomial>> get_variables() const;
     std::vector<Polynomial> get_history() const;
 

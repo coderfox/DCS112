@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include "lexer.hpp"
+#include <iterator>
 #include "catch.hpp"
 #include "error.hpp"
 
@@ -205,7 +206,7 @@ TEST_CASE("class Lexer > parsers", "[parser][lexer]")
     }
     SECTION("wrong")
     {
-        REQUIRE_THROWS_AS(lexer_wrong.parse(), Error);
+        REQUIRE_THROWS_AS(lexer_wrong.parse(), vector<Error>);
     }
 }
 
@@ -228,8 +229,31 @@ TEST_CASE("class Lexer > parsers # fix last token", "[parser][lexer]")
 
 TEST_CASE("class Lexer > parsers # fix single token", "[parser][lexer]")
 {
-    //              012
+    //                  012
     auto lexer = Lexer("999");
     lexer.parse();
     REQUIRE(lexer.token_count() == 1);
+}
+
+TEST_CASE("class Lexer > parsers # fix empty", "[parser][lexer]")
+{
+    auto lexer = Lexer("");
+    REQUIRE_NOTHROW(lexer.parse());
+    REQUIRE(lexer.token_count() == 0);
+}
+
+TEST_CASE("class Lexer > parsers # fix unexpected", "[parser][lexer]")
+{
+    auto lexer = Lexer("#");
+
+    // REQUIRE_THROWS_AS(lexer.parse(), vector<Error>);
+    try
+    {
+        lexer.parse();
+    }
+    catch (vector<Error> es)
+    {
+        for (auto it : es)
+            REQUIRE_NOTHROW(it.to_string());
+    }
 }

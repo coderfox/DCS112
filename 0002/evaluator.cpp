@@ -1,4 +1,5 @@
 #include <sstream>
+#include <algorithm>
 #include "evaluator.hpp"
 #include "parser/lexer.hpp"
 #include "parser/parser.hpp"
@@ -7,15 +8,23 @@ Evaluator::Evaluator()
 {
 }
 
-Polynomial Evaluator::eval(std::string code)
+Polynomial Evaluator::eval(string code)
 {
-    auto lexer = Lexer(code);
+    _current_str = code;
+    auto lexer = Lexer(_current_str);
     lexer.parse();
     auto parser = Parser(lexer.cbegin(), lexer.cend());
     auto expr = parser.expr();
-    // cout << *expr << endl;
+    parser.ensure_finished();
     expr->accept(*this);
     return _state.back();
+}
+
+Polynomial Evaluator::eval_discard(string code)
+{
+    auto poly = eval(code);
+    _state.pop_back();
+    return poly;
 }
 
 vector<pair<string, Polynomial>> Evaluator::get_variables() const
@@ -38,9 +47,12 @@ void Evaluator::visit(const ast::Ident &value)
     {
         _state.push_back(_context.at(value.value));
     }
-    catch (out_of_range)
+    catch (out_of_range &)
     {
-        throw "Undefined variable " + value.value;
+        throw Error(
+            Span(_current_str.begin(), _current_str.end()),
+            value.get_span(),
+            "Undefined variable " + value.value);
     }
 }
 
@@ -98,13 +110,15 @@ void Evaluator::visit(const ast::BinaryAssign &value)
         auto left = dynamic_cast<const ast::Ident &>(*value.id);
         id = left.value;
     }
-    catch (bad_cast)
+    catch (bad_cast &)
     {
         stringstream ss;
         ss << "Invalid left operand ("
            << *value.id
            << ") of BinaryAssign";
-        throw ss.str();
+        throw Error(
+            Span(_current_str.begin(), _current_str.end()),
+            value.get_span(), ss.str());
     }
     value.value->accept(*this);
     auto right = _state.back();
