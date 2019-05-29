@@ -80,7 +80,13 @@
     "numeric": "cpp",
     "stdexcept": "cpp",
     "typeinfo": "cpp",
-    "__errc": "cpp"
+    "__errc": "cpp",
+    "__node_handle": "cpp",
+    "array": "cpp",
+    "forward_list": "cpp",
+    "regex": "cpp",
+    "set": "cpp",
+    "unordered_set": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }
