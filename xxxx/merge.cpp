@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
 using namespace std;
 // Definition for singly-linked list.
 struct ListNode
@@ -18,51 +20,36 @@ struct ListNode
  * 1->1->2->3->4->4->5->6->nullptr
  *
  */
+#include <climits>
+
 ListNode *mergeKLists(vector<ListNode *> &lists)
 {
-    ListNode *tmp1 = lists[0];
-    ListNode *tmp2 = lists[1];
-    ListNode *tmp3 = lists[2];
 
-    ListNode *target;
-    ListNode *head = new ListNode(0);
-    ListNode *tmp = new ListNode(0);
-    target = head;
+    ListNode *res = nullptr;
+    vector<int> nodes;
 
-    while (tmp1 || tmp2 || tmp3)
+    for (auto &list : lists)
     {
-        if (tmp1 && (tmp1->val <= tmp2.val && tmp1->val <= tmp3->val))
+        while (list)
         {
-            head->val = tmp1->val;
-            tmp1 = tmp1->next;
-        }
-        else if (tmp2 && (tmp2->val <= tmp1->val && tmp2->val <= tmp3->val))
-        {
-            head->val = tmp2->val;
-            tmp2 = tmp2->next;
-        }
-        else if (tmp3)
-        {
-            head->val = tmp3->val;
-            tmp3 = tmp3->next;
-        }
+            nodes.push_back(list->val);
 
-        if (tmp1 != nullptr && tmp2 != nullptr && tmp3 != nullptr)
-        {
-            head->next = tmp;
-            head = tmp;
-            tmp = new ListNode(0);
-        }
-        else
-        {
-            head->next = nullptr;
-            delete tmp;
+            list = list->next;
         }
     }
+    sort(nodes.begin(), nodes.end());
 
-    return target;
+    for (auto i = nodes.rbegin(); i != nodes.rend(); i++)
+    {
+        ListNode *tmp = new ListNode(*i);
+        tmp->next = res;
+        res = tmp;
+    }
+
+    return res;
 }
 
+// Code below for testing only
 void printList(ListNode *head)
 {
     while (head)

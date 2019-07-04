@@ -7,25 +7,20 @@
 
 using namespace std;
 
-Stack::Stack() : data(nullptr)
+Stack::Stack()
 {
+    data = nullptr;
 }
-Stack::Stack(const Stack &rhs) : data(rhs.data)
+
+Stack::Stack(const Stack &rhs) : Stack()
 {
-    if (data == nullptr)
-        return;
-    node *prev_data = data;
-    data = new node;
-    copy(prev_data, prev_data + 1, data);
-    node *cur = data;
-    while (cur->next != nullptr)
+    for (auto ptr = rhs.data; ptr != nullptr; ptr = ptr->next)
     {
-        node *prev_next = cur->next;
-        cur->next = new node;
-        copy(prev_next, prev_next + 1, cur->next);
-        cur = cur->next;
+        push(ptr->num);
+        // cout << "[DEBUG] push " << ptr->num << endl;
     }
 }
+
 Stack::~Stack()
 {
     clear();
@@ -33,37 +28,35 @@ Stack::~Stack()
 
 Stack Stack::operator=(const Stack &rhs)
 {
-    Stack tmp = Stack(rhs);
-    swap(tmp.data, this->data);
+    Stack tmp = rhs;
+    swap(data, tmp.data);
     return *this;
 }
+
 void Stack::push(int num)
 {
     data = new node(num, data);
-#ifdef DEBUG
-    cout << "[NEW]" << hex << data << endl;
-#endif
 }
+
 void Stack::pop()
 {
-    node *to_del = data;
-    data = data->next;
-#ifdef DEBUG
-    cout << "[DELETE]" << hex << to_del << endl;
-#endif
-    delete to_del;
+    auto pdel = data;
+    data = pdel->next;
+    delete pdel;
 }
+
 int Stack::top() const
 {
     return data->num;
 }
+
 bool Stack::empty() const
 {
     return data == nullptr;
 }
+
 void Stack::clear()
 {
     while (!empty())
         pop();
-    // data = nullptr;
 }

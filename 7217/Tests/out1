@@ -1,0 +1,9 @@
+A double exception occurred!--from f1
+End of f1
+A float exception occurred!--from f2
+End of f2
+End of f1
+An int exception occurred!--from f2
+End of f2
+End of f1
+End of main

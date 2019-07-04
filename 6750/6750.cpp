@@ -1,9 +1,10 @@
 #include <iostream>
-#include "6750/Stack.hpp"
+#include "Stack.hpp"
 using namespace std;
 
 int main()
 {
+    freopen("6750.in", "r", stdin);
     freopen("6750.out", "w", stdout);
     Stack s1;
 

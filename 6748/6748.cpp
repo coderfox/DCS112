@@ -1,5 +1,5 @@
 #include <iostream>
-#include "6748/Stack.hpp"
+#include "Stack.hpp"
 using namespace std;
 
 void TestPushAndPop(Stack &s)

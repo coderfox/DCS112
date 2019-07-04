@@ -1,0 +1,33 @@
+stack is empty!
+stack is empty!
+stack is empty!
+stack is empty!
+push 8
+pop 8
+stack is empty!
+push 57
+pop 57
+push 26
+push 68
+push 28
+pop 28
+pop 68
+pop 26
+stack is empty!
+push 0
+pop 0
+push 66
+push 60
+s1 = s1
+[DEBUG] push 60
+[DEBUG] push 66
+[DEBUG] push 66
+[DEBUG] push 60
+[DEBUG] push 66
+[DEBUG] push 60
+[DEBUG] push 60
+[DEBUG] push 66
+s2 = s1
+s1 is empty: True
+pop 60
+pop 66
